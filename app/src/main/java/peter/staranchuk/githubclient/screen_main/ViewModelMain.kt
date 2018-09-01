@@ -14,15 +14,19 @@ class ViewModelMain : ViewModel() {
     var isLoadingError = ObservableField<Boolean>(false)
 
     fun refreshData(searchQuery : String) {
-        isLoading.set(true)
         isLoadingError.set(false)
 
-        repoModel.getRepositories(searchQuery, {newRepositories ->
-            isLoading.set(false)
-            repositories.value = newRepositories
-        }, {
-            isLoading.set(false)
-            isLoadingError.set(true)
-        })
+        if(searchQuery.isEmpty()) {
+            repositories.value = arrayListOf()
+        } else {
+            isLoading.set(true)
+            repoModel.getRepositories(searchQuery, { newRepositories ->
+                isLoading.set(false)
+                repositories.value = newRepositories
+            }, {
+                isLoading.set(false)
+                isLoadingError.set(true)
+            })
+        }
     }
 }

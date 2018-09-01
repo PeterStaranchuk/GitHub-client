@@ -10,7 +10,7 @@ class RepoModel {
     fun getRepositories(searchQuery: String, success: (repositories: List<RepositoryInfo>) -> Unit, failure: (message: String?) -> Unit) {
         GitHubApi.Factory().getInstance().getRepositories(searchQuery)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({ response ->
-                    success(response.items)
+                    success(response.repos)
                 }, {
                     failure(it.message)
                 })

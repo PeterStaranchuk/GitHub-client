@@ -2,7 +2,7 @@ package peter.staranchuk.githubclient.network.response
 
 import com.google.gson.annotations.SerializedName
 
-data class GitHubReposResponse(val items : List<RepositoryInfo>)
+data class GitHubReposResponse(@SerializedName("items") val repos : List<RepositoryInfo>)
 
 data class RepositoryInfo(val name : String, val description : String, val owner : Owner)
 
