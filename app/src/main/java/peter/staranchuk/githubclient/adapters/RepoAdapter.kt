@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.squareup.picasso.Picasso
+import peter.staranchuk.githubclient.R
 import peter.staranchuk.githubclient.databinding.ItemRepositoryBinding
 import peter.staranchuk.githubclient.network.response.RepositoryInfo
 
@@ -26,7 +27,7 @@ class RepoAdapter(private var repos: List<RepositoryInfo>, private val listener:
                 repositoryInfo = repoInfo
                 root.setOnClickListener { _ -> listener(layoutPosition) }
                 executePendingBindings()
-                Picasso.get().load(repoInfo.owner.avatarUrl).into(ivAvatar)
+                Picasso.get().load(repoInfo.owner.avatarUrl).placeholder(R.drawable.image_loading_placeholder).into(ivAvatar)
             }
         }
     }
