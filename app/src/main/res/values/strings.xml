@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">GitHubClient</string>
+    <string name="refreshData">Refresh data</string>
+    <string name="contentDescriptionRepoAvatar">Repo avatar</string>
+    <string name="hintSearchQuery">Enter search query</string>
+    <string name="mainScreenTitle">GitHub search</string>
 </resources>
