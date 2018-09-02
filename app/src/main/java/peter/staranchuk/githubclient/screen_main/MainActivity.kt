@@ -3,27 +3,31 @@ package peter.staranchuk.githubclient.screen_main
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.databinding.DataBindingUtil
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import com.jakewharton.rxbinding2.widget.RxTextView
+import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import peter.staranchuk.githubclient.R
 import peter.staranchuk.githubclient.adapters.RepoAdapter
 import peter.staranchuk.githubclient.databinding.ActivityMainBinding
+import peter.staranchuk.githubclient.dependency_injection.model_factories.MainViewModelFactory
 import peter.staranchuk.githubclient.interfaces.GitHubItem
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : DaggerAppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val searchStartDelay = 300L
+    private val searchStartTimeout = 500L
+
+    @Inject lateinit var mainViewModelFactory : MainViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val viewModel = ViewModelProviders.of(this).get(ViewModelMain::class.java)
+        val viewModel = ViewModelProviders.of(this, mainViewModelFactory).get(ViewModelMain::class.java)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.viewModel = viewModel
@@ -40,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         RxTextView.afterTextChangeEvents(etSearchQuery).skipInitialValue()
-                .debounce(searchStartDelay, TimeUnit.MILLISECONDS)
+                .debounce(searchStartTimeout, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { viewModel.refreshData(etSearchQuery.text.toString().trim()) }
     }
