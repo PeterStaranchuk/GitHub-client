@@ -6,6 +6,7 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import peter.staranchuk.githubclient.enums.SearchFilter
 import peter.staranchuk.githubclient.extentions.mergeElementwise
+import peter.staranchuk.githubclient.interfaces.GitHubItem
 import peter.staranchuk.githubclient.network.GitHubApi
 
 class RepoModel {

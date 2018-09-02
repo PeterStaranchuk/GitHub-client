@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import peter.staranchuk.githubclient.R
 import peter.staranchuk.githubclient.adapters.RepoAdapter
 import peter.staranchuk.githubclient.databinding.ActivityMainBinding
-import peter.staranchuk.githubclient.model.GitHubItem
+import peter.staranchuk.githubclient.interfaces.GitHubItem
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {

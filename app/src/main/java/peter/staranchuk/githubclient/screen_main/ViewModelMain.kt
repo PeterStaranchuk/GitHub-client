@@ -4,7 +4,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.databinding.ObservableField
 import peter.staranchuk.githubclient.enums.SearchFilter
-import peter.staranchuk.githubclient.model.GitHubItem
+import peter.staranchuk.githubclient.interfaces.GitHubItem
 import peter.staranchuk.githubclient.model.RepoModel
 
 class ViewModelMain : ViewModel() {
