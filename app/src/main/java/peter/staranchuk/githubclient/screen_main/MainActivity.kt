@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import peter.staranchuk.githubclient.R
 import peter.staranchuk.githubclient.adapters.RepoAdapter
 import peter.staranchuk.githubclient.databinding.ActivityMainBinding
-import peter.staranchuk.githubclient.network.response.RepositoryInfo
+import peter.staranchuk.githubclient.model.GitHubItem
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.rvRepositories.layoutManager = LinearLayoutManager(this)
 
-        viewModel.repositories.observe(this, Observer<List<RepositoryInfo>> { newRepositoriesList ->
+        viewModel.repositories.observe(this, Observer<List<GitHubItem>> { newRepositoriesList ->
             newRepositoriesList?.let {
                 rvRepositories.adapter = RepoAdapter(it) { clickedItemPosition ->
                     //TODO add on item clicked handler

@@ -3,13 +3,13 @@ package peter.staranchuk.githubclient.screen_main
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.databinding.ObservableField
+import peter.staranchuk.githubclient.enums.SearchFilter
+import peter.staranchuk.githubclient.model.GitHubItem
 import peter.staranchuk.githubclient.model.RepoModel
-import peter.staranchuk.githubclient.network.response.RepositoryInfo
-
 
 class ViewModelMain : ViewModel() {
     private var repoModel = RepoModel()
-    var repositories = MutableLiveData<List<RepositoryInfo>>()
+    var repositories = MutableLiveData<List<GitHubItem>>()
     var isLoading = ObservableField<Boolean>(false)
     var isLoadingError = ObservableField<Boolean>(false)
 
@@ -20,13 +20,15 @@ class ViewModelMain : ViewModel() {
             repositories.value = arrayListOf()
         } else {
             isLoading.set(true)
-            repoModel.getRepositories(searchQuery, { newRepositories ->
-                isLoading.set(false)
-                repositories.value = newRepositories
+
+            repoModel.getGitHubInfo(searchQuery, SearchFilter.ALL, {
+                repositories.value = it
+            }, {
+                isLoadingError.set(true)
             }, {
                 isLoading.set(false)
-                isLoadingError.set(true)
             })
+
         }
     }
 }
