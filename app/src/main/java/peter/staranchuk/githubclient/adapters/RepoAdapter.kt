@@ -32,12 +32,6 @@ class RepoAdapter(private var repos: List<GitHubItem>, private val listener: (po
         return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(repos[position], listener)
-
-    override fun getItemCount(): Int = repos.size
-
-    override fun getItemViewType(position: Int): Int = repos[position].getCode()
-
     class ViewHolder(private var binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(itemInfo: GitHubItem, listener: (position: Int) -> Unit) {
             when (itemViewType) {
@@ -68,4 +62,10 @@ class RepoAdapter(private var repos: List<GitHubItem>, private val listener: (po
             }
         }
     }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(repos[position], listener)
+
+    override fun getItemCount(): Int = repos.size
+
+    override fun getItemViewType(position: Int): Int = repos[position].getCode()
 }

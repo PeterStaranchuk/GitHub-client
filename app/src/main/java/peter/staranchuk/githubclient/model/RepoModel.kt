@@ -10,7 +10,7 @@ import peter.staranchuk.githubclient.interfaces.GitHubItem
 import peter.staranchuk.githubclient.network.GitHubApi
 
 class RepoModel {
-    val gitHubApi = GitHubApi.Factory().getInstance()
+    private val gitHubApi = GitHubApi.Factory().getInstance()
 
     private fun getUsers(searchQuery: String): Observable<List<GitHubItem>> {
         return gitHubApi.getUsers(searchQuery)
