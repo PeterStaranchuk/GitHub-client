@@ -4,6 +4,7 @@ import io.reactivex.Observable
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import peter.staranchuk.githubclient.network.response.GitHubReposResponse
+import peter.staranchuk.githubclient.network.response.GitHubUsersResponse
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -14,6 +15,9 @@ interface GitHubApi {
 
     @GET("/search/repositories")
     fun getRepositories(@Query("q") searchQuery : String) : Observable<GitHubReposResponse>
+
+    @GET("/search/users")
+    fun getUsers(@Query("q") searchQuery : String) : Observable<GitHubUsersResponse>
 
     class Factory {
         private val baseUrl = "https://api.github.com"
