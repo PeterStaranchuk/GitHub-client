@@ -9,29 +9,25 @@ import peter.staranchuk.githubclient.extentions.mergeElementwise
 import peter.staranchuk.githubclient.interfaces.GitHubItem
 import peter.staranchuk.githubclient.network.GitHubApi
 
-class RepoModel {
+class GitHubModel {
     private val gitHubApi = GitHubApi.Factory().getInstance()
 
     private fun getUsers(searchQuery: String): Observable<List<GitHubItem>> {
         return gitHubApi.getUsers(searchQuery)
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { it.users }
     }
 
     private fun getRepositories(searchQuery: String): Observable<List<GitHubItem>> {
         return gitHubApi.getRepositories(searchQuery)
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { it.repos }
     }
 
-    fun getGitHubInfo(searchQuery: String, filter: SearchFilter,
-                      success: (gitHubItems : List<GitHubItem>) -> Unit,
-                      failure: (message : String?) -> Unit,
-                      complete: () -> Unit) {
-
-        val searchResultObservable = when (filter) {
+    fun getGitHubInfo(searchQuery: String, filter: SearchFilter) : Observable<List<GitHubItem>> {
+        return when (filter) {
             SearchFilter.ALL -> {
                 Observable.zip(getUsers(searchQuery), getRepositories(searchQuery),
                         BiFunction { users, repos ->
@@ -44,11 +40,5 @@ class RepoModel {
                 getUsers(searchQuery).map { it }
             }
         }
-
-        searchResultObservable.subscribe(
-                { success(it) },
-                { failure(it.message) },
-                { complete() }
-        )
     }
 }
