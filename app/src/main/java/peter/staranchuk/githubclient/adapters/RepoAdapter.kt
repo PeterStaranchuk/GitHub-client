@@ -10,69 +10,62 @@ import peter.staranchuk.githubclient.databinding.ItemDummyBinding
 import peter.staranchuk.githubclient.databinding.ItemRepositoryBinding
 import peter.staranchuk.githubclient.databinding.ItemUserBinding
 import peter.staranchuk.githubclient.enums.GitHubItemType
-import peter.staranchuk.githubclient.model.GitHubItem
+import peter.staranchuk.githubclient.interfaces.GitHubItem
 import peter.staranchuk.githubclient.network.response.RepositoryInfo
 import peter.staranchuk.githubclient.network.response.UserInfo
 
 class RepoAdapter(private var repos: List<GitHubItem>, private val listener: (position: Int) -> Unit) : RecyclerView.Adapter<RepoAdapter.ViewHolder>() {
 
+    private var layoutInflater : LayoutInflater? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context)
+        layoutInflater = layoutInflater?: LayoutInflater.from(parent.context)
 
-        when (viewType) {
-            GitHubItemType.REPOSITORY.code -> {
-                val binding = ItemRepositoryBinding.inflate(layoutInflater, parent, false)
-                return ViewHolder(binding)
-            }
+        val binding = when (viewType) {
+            GitHubItemType.REPOSITORY.code -> ItemRepositoryBinding.inflate(layoutInflater!!, parent, false)
 
-            GitHubItemType.USER.code -> {
-                val binding = ItemUserBinding.inflate(layoutInflater, parent, false)
-                return ViewHolder(binding)
-            }
+            GitHubItemType.USER.code -> ItemUserBinding.inflate(layoutInflater!!, parent, false)
 
-            else -> {
-                val binding = ItemDummyBinding.inflate(layoutInflater, parent, false)
-                return ViewHolder(binding)
-            }
+            else -> ItemDummyBinding.inflate(layoutInflater!!, parent, false)
         }
+
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(repos[position], listener)
 
     override fun getItemCount(): Int = repos.size
 
+    override fun getItemViewType(position: Int): Int = repos[position].getCode()
+
     class ViewHolder(private var binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(itemInfo: GitHubItem, listener: (position: Int) -> Unit) {
-            when(itemViewType) {
-                GitHubItemType.USER.code -> {
-                    (binding as ItemUserBinding).apply {
-                        userInformation = itemInfo as UserInfo
-                        Picasso.get().load(itemInfo.avatarUrl).placeholder(R.drawable.image_loading_placeholder).into(ivAvatar)
-                    }
-                }
+            when (itemViewType) {
+                GitHubItemType.USER.code -> bindUserView(binding as ItemUserBinding, itemInfo as UserInfo)
 
-                GitHubItemType.REPOSITORY.code -> {
-                    (binding as ItemRepositoryBinding).apply {
-                        repositoryInfo = itemInfo as RepositoryInfo
-                        Picasso.get().load(itemInfo.owner.avatarUrl).placeholder(R.drawable.image_loading_placeholder).into(ivAvatar)
-                    }
-                }
+                GitHubItemType.REPOSITORY.code -> bindRepoView(binding as ItemRepositoryBinding, itemInfo as RepositoryInfo)
             }
 
             binding.executePendingBindings()
             binding.root.setOnClickListener { _ -> listener(layoutPosition) }
         }
-    }
 
-    override fun getItemViewType(position: Int): Int {
-        if (repos[position] is RepositoryInfo) {
-            return GitHubItemType.REPOSITORY.code
+        private fun bindRepoView(binding: ItemRepositoryBinding, itemInfo: RepositoryInfo) {
+            binding.apply {
+                repositoryInfo = itemInfo
+                Picasso.get().load(itemInfo.owner.avatarUrl)
+                        .placeholder(R.drawable.image_loading_placeholder)
+                        .into(ivAvatar)
+            }
         }
 
-        if (repos[position] is UserInfo) {
-            return GitHubItemType.USER.code
+        private fun bindUserView(binding: ItemUserBinding, itemInfo: UserInfo) {
+            binding.apply {
+                userInformation = itemInfo
+                Picasso.get().load(itemInfo.avatarUrl)
+                        .placeholder(R.drawable.image_loading_placeholder)
+                        .into(ivAvatar)
+            }
         }
-
-        return super.getItemViewType(position)
     }
 }
