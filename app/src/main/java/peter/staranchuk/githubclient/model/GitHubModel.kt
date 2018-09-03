@@ -30,15 +30,13 @@ class GitHubModel {
         return when (filter) {
             SearchFilter.ALL -> {
                 Observable.zip(getUsers(searchQuery), getRepositories(searchQuery),
-                        BiFunction { users, repos ->
-                            mergeElementwise(users, repos)
-                        }
+                        BiFunction { users, repos -> mergeElementwise(users, repos) }
                 )
             }
 
-            SearchFilter.USERS, SearchFilter.REPOS -> {
-                getUsers(searchQuery).map { it }
-            }
+            SearchFilter.USERS -> getUsers(searchQuery)
+
+            SearchFilter.REPOS -> getRepositories(searchQuery)
         }
     }
 }
