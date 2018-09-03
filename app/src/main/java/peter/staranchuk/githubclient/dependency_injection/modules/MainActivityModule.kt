@@ -1,21 +1,21 @@
 package peter.staranchuk.githubclient.dependency_injection.modules
 
+import android.arch.lifecycle.ViewModel
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.android.ContributesAndroidInjector
-import peter.staranchuk.githubclient.dependency_injection.model_factories.MainViewModelFactory
-import peter.staranchuk.githubclient.model.GitHubModel
+import dagger.multibindings.IntoMap
+import peter.staranchuk.githubclient.interfaces.ViewModelKeyAnnotation
 import peter.staranchuk.githubclient.screen_main.MainActivity
+import peter.staranchuk.githubclient.screen_main.ViewModelMain
 
 @Module
 internal abstract class MainActivityModule {
 
-    @Module
-    companion object {
-        @JvmStatic
-        @Provides
-        internal fun provideMainViewModelFactory(gitHubModel: GitHubModel): MainViewModelFactory = MainViewModelFactory(gitHubModel)
-    }
+    @Binds
+    @IntoMap
+    @ViewModelKeyAnnotation.ViewModelKey(ViewModelMain::class)
+    abstract fun bindMainViewModel(viewModel: ViewModelMain): ViewModel
 
     @ContributesAndroidInjector
     internal abstract fun mainActivity(): MainActivity

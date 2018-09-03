@@ -1,6 +1,7 @@
 package peter.staranchuk.githubclient.screen_main
 
 import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.databinding.DataBindingUtil
 import android.os.Bundle
@@ -12,30 +13,27 @@ import kotlinx.android.synthetic.main.activity_main.*
 import peter.staranchuk.githubclient.R
 import peter.staranchuk.githubclient.adapters.RepoAdapter
 import peter.staranchuk.githubclient.databinding.ActivityMainBinding
-import peter.staranchuk.githubclient.dependency_injection.model_factories.MainViewModelFactory
 import peter.staranchuk.githubclient.interfaces.GitHubItem
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MainActivity : DaggerAppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
-    private val searchStartTimeout = 500L
+    @Inject lateinit var mainViewModelFactory : ViewModelProvider.Factory
 
-    @Inject lateinit var mainViewModelFactory : MainViewModelFactory
+    private val searchStartTimeout = 500L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val viewModel = ViewModelProviders.of(this, mainViewModelFactory).get(ViewModelMain::class.java)
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        val binding : ActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.viewModel = viewModel
         binding.executePendingBindings()
 
-        binding.rvRepositories.layoutManager = LinearLayoutManager(this)
-
-        viewModel.repositories.observe(this, Observer<List<GitHubItem>> { newRepositoriesList ->
+        rvRepositories.layoutManager = LinearLayoutManager(this)
+        viewModel.ginHubItems.observe(this, Observer<List<GitHubItem>> { newRepositoriesList ->
             newRepositoriesList?.let {
                 rvRepositories.adapter = RepoAdapter(it) { clickedItemPosition ->
                     //TODO add on item clicked handler
