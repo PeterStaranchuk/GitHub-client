@@ -21,12 +21,13 @@ class ViewModelMain @Inject constructor(var gitHubModel: GitHubModel, var connec
     fun refreshData(searchQuery: String) {
         isLoadingError.set(false)
 
-        if (searchQuery.isEmpty()) {
-            ginHubItems.value = arrayListOf()
-        } else {
-            isLoading.set(true)
+        if (connectivityChecker.isNetworkAvailable()) {
 
-            if(connectivityChecker.isNetworkAvailable()) {
+            if (searchQuery.isEmpty()) {
+                ginHubItems.value = arrayListOf()
+            } else {
+                isLoading.set(true)
+
                 isNetworkAvailable.set(true)
                 disposable.add(gitHubModel.getGitHubInfo(searchQuery, SearchFilter.ALL).subscribeWith(object : DisposableObserver<List<GitHubItem>>() {
                     override fun onNext(t: List<GitHubItem>) {
@@ -40,9 +41,9 @@ class ViewModelMain @Inject constructor(var gitHubModel: GitHubModel, var connec
 
                     override fun onComplete() = isLoading.set(false)
                 }))
-            } else {
-                isNetworkAvailable.set(false)
             }
+        } else {
+            isNetworkAvailable.set(false)
         }
     }
 
